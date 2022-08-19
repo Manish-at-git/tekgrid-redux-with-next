@@ -5,23 +5,20 @@ import { wrapper } from "../redux/store";
 import { END } from "redux-saga";
 
 export default function Home() {
-  const dispatch = useDispatch();
+  const data = useSelector((state) => state.state.data);
 
-  const data = useSelector((state) => state.state);
-
+  console.log(data);
   return (
-    <div>
-      <button>Click me</button>
-      <div>{data.navbarOpened}</div>
-      {data.navbarOpened ? <div>TRUE</div> : null}
+    <div style={{ margin: "30px" }}>
+      {data.slice(0, 15).map((item) => (
+        <p key={item.id}>{item.title}</p>
+      ))}
     </div>
   );
 }
 
-export const getStaticProps = wrapper.getStaticProps(
-  (store) => async (context) => {
-    store.dispatch(getData());
-    store.dispatch(END);
-    await store.sagaTask.toPromise();
-  }
-);
+export const getStaticProps = wrapper.getStaticProps((store) => async () => {
+  store.dispatch(getData());
+  store.dispatch(END);
+  await store.sagaTask.toPromise();
+});
